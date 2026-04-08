@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tertiary-container": "#d8e2ff",
+            "on-secondary-fixed-variant": "#4c5e6b",
+            "on-primary-fixed": "#0a2c70",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#f5f9ff",
+            "surface-tint": "#0b5fff",
+            "outline-variant": "#acb3b7",
+            "error-container": "#fa746f",
+            "tertiary": "#3f5fb3",
+            "surface-container": "#eaeff2",
+            "on-tertiary-container": "#23408a",
+            "on-background": "#2c3437",
+            "inverse-on-surface": "#9a9d9f",
+            "tertiary-dim": "#495178",
+            "tertiary-fixed-dim": "#bac1ef",
+            "error": "#a83836",
+            "secondary-dim": "#435562",
+            "surface-container-high": "#e3e9ed",
+            "surface-container-highest": "#dce4e8",
+            "surface-bright": "#f7f9fb",
+            "on-primary-container": "#103b8f",
+            "on-primary": "#f5f9ff",
+            "surface-variant": "#dce4e8",
+            "error-dim": "#67040d",
+            "outline": "#747c80",
+            "on-tertiary-fixed": "#2a3257",
+            "inverse-primary": "#9dc4ff",
+            "tertiary-fixed": "#d8e2ff",
+            "on-tertiary": "#faf8ff",
+            "primary": "#0b5fff",
+            "secondary-fixed-dim": "#c7d8ff",
+            "primary-dim": "#084fdb",
+            "on-error-container": "#6e0a12",
+            "on-surface": "#2c3437",
+            "on-primary-fixed-variant": "#174aa8",
+            "on-error": "#fff7f6",
+            "surface-dim": "#d4dbdf",
+            "primary-fixed": "#9dc4ff",
+            "primary-container": "#cfe0ff",
+            "on-secondary-container": "#425460",
+            "surface-container-low": "#f0f4f7",
+            "on-surface-variant": "#596064",
+            "secondary-fixed": "#d9e6ff",
+            "secondary-container": "#dbe7ff",
+            "inverse-surface": "#0b0f10",
+            "secondary": "#355ea8",
+            "primary-fixed-dim": "#7ea8ff",
+            "surface": "#f7f9fb",
+            "on-secondary-fixed": "#30424d",
+            "on-tertiary-fixed-variant": "#474e76",
+            "background": "#f3f7ff"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+          fontFamily: {
+            headline: ["Manrope"],
+            body: ["Manrope"],
+            label: ["Manrope"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: "Manrope", sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+    }
+    .bg-primary-gradient {
+      background: linear-gradient(135deg, #0b5fff 0%, #63a4ff 100%);
+    }
+    .bg-vivid-card-1 {
+      background: linear-gradient(135deg, rgba(11,95,255,0.12), rgba(99,164,255,0.26));
+    }
+    .bg-vivid-card-2 {
+      background: linear-gradient(135deg, rgba(63,95,179,0.12), rgba(126,168,255,0.24));
+    }
+    .bg-vivid-card-3 {
+      background: linear-gradient(135deg, rgba(219,231,255,0.9), rgba(180,210,255,0.75));
+    }
+    .icon-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 9999px;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .kanban-column {
+      min-height: 240px;
+      transition: box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+    }
+    .kanban-drop-active {
+      border-color: rgba(11, 95, 255, 0.45) !important;
+      box-shadow: 0 0 0 2px rgba(11, 95, 255, 0.16) inset;
+      background-color: rgba(219, 234, 254, 0.6);
+    }
+    [data-kanban-card] {
+      cursor: grab;
+    }
+    [data-kanban-card]:active {
+      cursor: grabbing;
+    }
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes softPulse {
+      0%, 100% { box-shadow: 0 10px 24px rgba(11, 95, 255, 0.12); }
+      50% { box-shadow: 0 14px 30px rgba(11, 95, 255, 0.2); }
+    }
+    main > section {
+      animation: fadeSlideUp 420ms ease-out both;
+    }
+    #view-dashboard .grid > div,
+    #view-orders .grid > *,
+    #view-clients .grid > *,
+    #view-services .grid > * {
+      animation: fadeSlideUp 520ms ease-out both;
+    }
+    #view-dashboard .grid > div:nth-child(1),
+    #view-orders .grid > *:nth-child(1),
+    #view-clients .grid > *:nth-child(1),
+    #view-services .grid > *:nth-child(1) { animation-delay: 40ms; }
+    #view-dashboard .grid > div:nth-child(2),
+    #view-orders .grid > *:nth-child(2),
+    #view-clients .grid > *:nth-child(2),
+    #view-services .grid > *:nth-child(2) { animation-delay: 110ms; }
+    #view-dashboard .grid > div:nth-child(3) { animation-delay: 180ms; }
+    .bg-vivid-card-1,
+    .bg-vivid-card-2,
+    .bg-vivid-card-3,
+    .bg-surface-container-lowest.rounded-xl,
+    .bg-surface-container-lowest.rounded-xl.overflow-hidden {
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .bg-vivid-card-1:hover,
+    .bg-vivid-card-2:hover,
+    .bg-vivid-card-3:hover,
+    .bg-surface-container-lowest.rounded-xl:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(11, 95, 255, 0.12);
+    }
+    .bg-primary-gradient {
+      animation: softPulse 3.8s ease-in-out infinite;
+    }
+    button,
+    select,
+    input,
+    textarea {
+      transition: all 180ms ease;
+    }
+    button:hover {
+      filter: saturate(1.08);
+    }
+    table tbody tr {
+      transition: background-color 180ms ease, transform 180ms ease;
+    }
+    table tbody tr:hover {
+      transform: translateX(2px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+    .view-hidden { display: none; }
+    @media (min-width: 768px) {
+      #side-nav {
+        transition: width 260ms ease, padding 260ms ease;
+      }
+      #main-content {
+        transition: margin-left 260ms ease;
+      }
+      body.sidebar-collapsed #side-nav {
+        width: 5.5rem;
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+      }
+      body.sidebar-collapsed #main-content {
+        margin-left: 5.5rem;
+      }
+      body.sidebar-collapsed #side-nav .side-nav-title,
+      body.sidebar-collapsed #side-nav .side-nav-label {
+        display: none;
+      }
+      body.sidebar-collapsed #side-nav .nav-btn {
+        justify-content: center;
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
+      }
+      body.sidebar-collapsed #side-nav .material-symbols-outlined {
+        font-variation-settings: "FILL" 1, "wght" 380, "GRAD" 0, "opsz" 24;
+      }
+    }
+	    @media (max-width: 767px) {
+	      body {
+	        overflow-x: hidden;
+	      }
+	      #main-content {
+	        padding-left: 1rem;
+	        padding-right: 1rem;
+	      }
+	      .mobile-sheet {
+	        border-bottom-left-radius: 0;
+	        border-bottom-right-radius: 0;
+	      }
+	      .mobile-sheet-wrap {
+	        padding: 0;
+	        align-items: flex-end;
+	      }
+	      .mobile-sheet-panel {
+	        width: 100%;
+	        max-width: 100%;
+	        min-height: 90dvh;
+	        max-height: 92dvh;
+	        overflow: auto;
+	      }
+	    }
+	  </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+  <nav class="fixed top-0 w-full z-40 bg-slate-50/70 backdrop-blur-xl flex justify-between items-center h-16 px-4 md:px-8 border-b border-slate-200/20">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-primary">auto_awesome</span>
+      <span class="text-xl font-bold tracking-tighter text-sky-700">Linen Logic</span>
+      <button id="btn-toggle-sidebar" class="hidden md:inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-primary hover:bg-blue-200 transition-colors" title="Contraer menú lateral" type="button">
+        <span class="material-symbols-outlined" id="sidebar-toggle-icon">left_panel_open</span>
+      </button>
+    </div>
+    <div class="flex items-center gap-3 md:gap-6">
+      <div class="hidden md:flex gap-3 items-center" id="top-nav">
+        <button class="nav-btn text-sky-700 font-semibold text-sm px-3 py-1 rounded-lg" data-view="dashboard">Inicio</button>
+        <button class="nav-btn text-slate-500 hover:bg-sky-50 px-3 py-1 rounded-lg text-sm" data-view="orders">Nuevo Pedido</button>
+        <button class="nav-btn text-slate-500 hover:bg-sky-50 px-3 py-1 rounded-lg text-sm" data-view="clients">Clientes</button>
+        <button class="nav-btn text-slate-500 hover:bg-sky-50 px-3 py-1 rounded-lg text-sm" data-view="services">Servicios</button>
+      </div>
+      <div class="flex items-center gap-2 md:gap-4 md:border-l border-outline-variant/20 md:pl-6">
+        <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+        <div class="hidden sm:block w-8 h-8 rounded-full bg-surface-container-high overflow-hidden">
+          <img alt="Foto de perfil del usuario" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoMd430UsXvklFyNUo-L_3lKATy0B-c36kyrf_RbjZ62wA4Y9uswtKXLSkavXwcpKHBE-yB0su-IKhoxzd0PQI335MO-sgnhuv3SEhKvkMysv6ZVNZ65zHpa9EIi_WkEahP2evGZu5XewKVB36IXniUhS6pjXJX06YVuxhpU_8lBKW4NgaxHmRhP9y7FNgjU4DFj1c5c8aLM8HscJopCWOTlSkNq-D5CUiG03bCkPtIWuu4dr7wbhwCEXIhFJZjHEDZkS72WqdS15Y"/>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <aside class="hidden md:flex fixed left-0 top-16 h-full w-64 bg-slate-50 border-r border-slate-200/20 flex-col gap-2 p-4 pt-8" id="side-nav">
+    <div class="mb-6 px-4">
+      <p class="side-nav-title font-manrope text-sm font-medium uppercase tracking-widest text-slate-500">Gestión Premium</p>
+    </div>
+    <button class="nav-btn flex items-center gap-3 text-sky-700 bg-sky-100/50 rounded-xl px-4 py-3 transition-all" data-view="dashboard">
+      <span class="material-symbols-outlined">home</span>
+      <span class="side-nav-label font-manrope text-sm font-medium uppercase tracking-widest">Inicio</span>
+    </button>
+    <button class="nav-btn flex items-center gap-3 text-slate-500 hover:bg-slate-200/50 rounded-xl px-4 py-3 transition-all" data-view="orders">
+      <span class="material-symbols-outlined">add_circle</span>
+      <span class="side-nav-label font-manrope text-sm font-medium uppercase tracking-widest">Nuevo Pedido</span>
+    </button>
+    <button class="nav-btn flex items-center gap-3 text-slate-500 hover:bg-slate-200/50 rounded-xl px-4 py-3 transition-all" data-view="clients">
+      <span class="material-symbols-outlined">groups</span>
+      <span class="side-nav-label font-manrope text-sm font-medium uppercase tracking-widest">Clientes</span>
+    </button>
+    <button class="nav-btn flex items-center gap-3 text-slate-500 hover:bg-slate-200/50 rounded-xl px-4 py-3 transition-all" data-view="services">
+      <span class="material-symbols-outlined">local_laundry_service</span>
+      <span class="side-nav-label font-manrope text-sm font-medium uppercase tracking-widest">Servicios</span>
+    </button>
+  </aside>
+
+  <main class="md:ml-64 pt-20 md:pt-24 px-4 md:px-12 pb-24" id="main-content">
+    <section id="view-dashboard">
+      <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+	          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface mb-2">Panel de Control</h1>
+	          <p class="text-on-surface-variant text-base sm:text-lg">Resumen de operaciones para hoy.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="icon-pill bg-blue-100 text-blue-800"><span class="material-symbols-outlined text-sm">bolt</span>Operativo</span>
+            <span class="icon-pill bg-indigo-100 text-indigo-800"><span class="material-symbols-outlined text-sm">verified</span>Control Activo</span>
+            <span class="icon-pill bg-cyan-100 text-cyan-800"><span class="material-symbols-outlined text-sm">local_shipping</span>Rutas al día</span>
+          </div>
+        </div>
+        <button id="btn-go-orders" class="bg-primary-gradient text-on-primary px-8 py-4 rounded-full font-bold flex items-center gap-3 active:scale-95 transition-transform duration-200 shadow-xl shadow-primary/10">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+          Nuevo Pedido
+        </button>
+      </header>
+
+	      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-vivid-card-1 p-8 rounded-xl flex flex-col justify-between min-h-[180px] border border-blue-200/50">
+          <div class="flex justify-between items-start">
+            <span class="text-label-sm font-bold tracking-[0.1em] text-on-surface-variant uppercase">Pedidos Hoy</span>
+            <span class="material-symbols-outlined text-primary">calendar_today</span>
+          </div>
+          <div>
+            <span class="text-5xl font-extrabold tracking-tighter text-on-surface" id="metric-orders-today">0</span>
+          </div>
+        </div>
+        <div class="bg-vivid-card-2 p-8 rounded-xl flex flex-col justify-between min-h-[180px] border border-indigo-200/50">
+          <div class="flex justify-between items-start">
+            <span class="text-label-sm font-bold tracking-[0.1em] text-on-surface-variant uppercase">En Proceso</span>
+            <span class="material-symbols-outlined text-tertiary">autorenew</span>
+          </div>
+          <div>
+            <span class="text-5xl font-extrabold tracking-tighter text-tertiary-dim" id="metric-in-progress">0</span>
+            <div class="w-full bg-surface-container-highest h-1.5 rounded-full mt-4 overflow-hidden">
+              <div class="bg-primary h-full" id="progress-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-vivid-card-3 p-8 rounded-xl flex flex-col justify-between min-h-[180px] border border-cyan-200/60">
+          <div class="flex justify-between items-start">
+            <span class="text-label-sm font-bold tracking-[0.1em] text-on-secondary-container uppercase">Listos para Entrega</span>
+            <span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+          </div>
+          <div>
+            <span class="text-5xl font-extrabold tracking-tighter text-on-secondary-container" id="metric-ready">0</span>
+            <p class="text-sm text-on-secondary-fixed-variant mt-2">Esperando recogida</p>
+          </div>
+	        </div>
+	      </div>
+	      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+	        <div class="bg-surface-container-lowest rounded-xl border border-emerald-200/60 px-5 py-4">
+	          <p class="text-xs uppercase tracking-wider text-emerald-700 font-bold flex items-center gap-1"><span class="material-symbols-outlined text-sm">today</span>Ingresos hoy</p>
+	          <p id="metric-income-today" class="text-2xl font-extrabold text-emerald-700 mt-2">S/ 0.00</p>
+	        </div>
+	        <div class="bg-surface-container-lowest rounded-xl border border-blue-200/60 px-5 py-4">
+	          <p class="text-xs uppercase tracking-wider text-blue-700 font-bold flex items-center gap-1"><span class="material-symbols-outlined text-sm">date_range</span>Ingresos semana</p>
+	          <p id="metric-income-week" class="text-2xl font-extrabold text-blue-700 mt-2">S/ 0.00</p>
+	        </div>
+	        <div class="bg-surface-container-lowest rounded-xl border border-indigo-200/60 px-5 py-4">
+	          <p class="text-xs uppercase tracking-wider text-indigo-700 font-bold flex items-center gap-1"><span class="material-symbols-outlined text-sm">calendar_month</span>Ingresos mes</p>
+	          <p id="metric-income-month" class="text-2xl font-extrabold text-indigo-700 mt-2">S/ 0.00</p>
+	        </div>
+	      </div>
+	      <div id="dashboard-alert-box" class="mb-10 hidden rounded-xl border border-amber-300/60 bg-amber-50 px-5 py-4 text-amber-900">
+	        <div class="flex items-start justify-between gap-4">
+	          <div class="flex items-start gap-3">
+	            <span class="material-symbols-outlined text-amber-600 mt-0.5">warning</span>
+	            <div>
+	              <p class="font-bold">Atención de pedidos</p>
+	              <p class="text-sm text-amber-800" id="dashboard-alert-text"></p>
+	            </div>
+	          </div>
+	          <button id="btn-go-alert-orders" class="text-sm font-bold text-amber-700 hover:underline">Ver pedidos</button>
+	        </div>
+	      </div>
+
+	      <section class="bg-surface-container-lowest rounded-xl overflow-hidden">
+        <div class="p-8 border-b border-outline-variant/10 flex justify-between items-center">
+          <h2 class="text-xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">inventory_2</span>
+            Últimos Pedidos
+          </h2>
+          <button id="btn-ver-todos" class="text-primary text-sm font-bold hover:underline">Ver todo</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="bg-surface-container-low/50">
+                <th class="px-8 py-5 text-label-sm font-bold tracking-widest text-on-surface-variant uppercase">Cliente</th>
+                <th class="px-8 py-5 text-label-sm font-bold tracking-widest text-on-surface-variant uppercase">Estado</th>
+	                <th class="px-8 py-5 text-label-sm font-bold tracking-widest text-on-surface-variant uppercase">Cantidad</th>
+	                <th class="px-8 py-5 text-label-sm font-bold tracking-widest text-on-surface-variant uppercase">Servicio</th>
+	                <th class="px-8 py-5 text-label-sm font-bold tracking-widest text-on-surface-variant uppercase">Alerta</th>
+	                <th class="px-8 py-5 text-label-sm font-bold tracking-widest text-on-surface-variant uppercase">Total</th>
+              </tr>
+            </thead>
+            <tbody id="latest-orders-tbody" class="divide-y divide-outline-variant/10"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section id="view-orders" class="view-hidden">
+      <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+	          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3">
+	            <span class="material-symbols-outlined text-primary text-3xl sm:text-4xl">receipt_long</span>
+	            Pedidos
+	          </h1>
+          <p class="text-on-surface-variant">Registra pedidos y actualiza su estado.</p>
+          <div class="hidden md:flex items-center gap-3 mt-4">
+            <img class="w-9 h-9 rounded-full object-cover ring-2 ring-blue-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoMd430UsXvklFyNUo-L_3lKATy0B-c36kyrf_RbjZ62wA4Y9uswtKXLSkavXwcpKHBE-yB0su-IKhoxzd0PQI335MO-sgnhuv3SEhKvkMysv6ZVNZ65zHpa9EIi_WkEahP2evGZu5XewKVB36IXniUhS6pjXJX06YVuxhpU_8lBKW4NgaxHmRhP9y7FNgjU4DFj1c5c8aLM8HscJopCWOTlSkNq-D5CUiG03bCkPtIWuu4dr7wbhwCEXIhFJZjHEDZkS72WqdS15Y" alt="operador"/>
+            <img class="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYZellqq14zUWQPkyma1ibqCB0EzHLiHv-JSiLO0zgHwdBdXaVEkzxZxX9xjpNGTbCvSX3jy_WkbuwxwDIX-OqH4qxvqhu2FjSkUi_1Q0O0HsEcSZc9F8xrs5jhDFzQmj858TZCi2yxW-KBeDAovJFduBondQhoKuNoV6E-iWL6tUaJtBFpaizLZXf8FHUin6M4A8ZFDinzjzoPJZoE9f2yLCH3febhc-Jdyst8A3GPVWmd34Eq_03hPt0ErqCyD7PI-90aiFvoGsN" alt="cliente"/>
+            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold"><span class="material-symbols-outlined text-sm">bolt</span>Flujo activo</span>
+          </div>
+        </div>
+        <button id="btn-open-order-modal" type="button" class="bg-primary-gradient text-on-primary px-6 py-3 rounded-full font-bold inline-flex items-center gap-2 self-start md:self-auto">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+          Nuevo Pedido
+        </button>
+      </header>
+
+      <div class="bg-surface-container-lowest rounded-xl overflow-hidden w-full">
+	          <div class="p-4 sm:p-6 border-b border-outline-variant/10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+	            <div class="flex items-center gap-3">
+	              <h2 class="text-lg font-bold">Todos los Pedidos</h2>
+	              <div class="inline-flex rounded-lg bg-surface-container-high p-1">
+                <button id="orders-view-table" type="button" class="orders-view-btn px-3 py-1 text-xs font-bold rounded-md bg-white text-primary">Tabla</button>
+                <button id="orders-view-kanban" type="button" class="orders-view-btn px-3 py-1 text-xs font-bold rounded-md text-on-surface-variant">Kanban</button>
+              </div>
+            </div>
+	            <div class="flex w-full sm:w-auto flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+	              <div class="relative w-full sm:w-auto">
+	                <span class="material-symbols-outlined text-on-surface-variant absolute left-2 top-1/2 -translate-y-1/2 text-base">search</span>
+	                <input id="orders-search" type="text" placeholder="Buscar por cliente o servicio..." class="w-full sm:w-72 pl-8 pr-3 py-2 text-sm rounded-lg border-outline-variant/40 bg-surface"/>
+	              </div>
+	              <button id="btn-reset-demo" class="text-sm text-on-surface-variant hover:text-primary text-left sm:text-right">Reiniciar datos demo</button>
+	            </div>
+	          </div>
+          <div id="orders-table-wrap" class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="bg-surface-container-low/50">
+	                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant"><span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">person</span>Cliente</span></th>
+	                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant"><span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">local_laundry_service</span>Servicio</span></th>
+		                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant"><span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">fitness_center</span>Cantidad</span></th>
+		                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant"><span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">swap_horiz</span>Estado</span></th>
+		                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant"><span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">payments</span>Total</span></th>
+                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody" class="divide-y divide-outline-variant/10"></tbody>
+            </table>
+          </div>
+          <div id="orders-kanban-wrap" class="hidden p-4 md:p-5">
+            <div id="orders-kanban-board" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4"></div>
+          </div>
+      </div>
+    </section>
+
+    <div id="order-modal" class="hidden fixed inset-0 z-50">
+      <div id="order-modal-backdrop" class="absolute inset-0 bg-slate-900/45 backdrop-blur-[1px]"></div>
+	      <div class="relative min-h-full flex items-center justify-center p-4 mobile-sheet-wrap">
+	        <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-blue-100 mobile-sheet mobile-sheet-panel">
+          <div class="px-5 py-4 border-b border-outline-variant/20 flex items-center justify-between">
+            <h2 id="order-modal-title" class="text-lg font-bold text-primary inline-flex items-center gap-2">
+              <span class="material-symbols-outlined">add_shopping_cart</span>
+              Nuevo Pedido
+            </h2>
+            <button id="order-modal-close-x" type="button" class="w-8 h-8 rounded-full hover:bg-slate-100 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-on-surface-variant">close</span>
+            </button>
+          </div>
+          <form id="order-form" class="p-5 space-y-4">
+            <input id="order-edit-id" type="hidden"/>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Cliente</span>
+              <select id="order-client" required class="mt-1 block w-full rounded-lg border-outline-variant/40"></select>
+            </label>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Servicio</span>
+              <select id="order-service" required class="mt-1 block w-full rounded-lg border-outline-variant/40"></select>
+            </label>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Tipo de cantidad</span>
+              <select id="order-measure-type" class="mt-1 block w-full rounded-lg border-outline-variant/40">
+                <option value="kg">Peso (kg)</option>
+                <option value="unit">Unidad</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant" id="order-quantity-label">Cantidad (kg)</span>
+              <input id="order-quantity" type="number" min="0.1" step="0.1" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+            </label>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Entrega estimada</span>
+              <input id="order-due-date" type="date" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+            </label>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Notas</span>
+              <textarea id="order-notes" rows="3" class="mt-1 block w-full rounded-lg border-outline-variant/40" placeholder="Prendas delicadas, instrucciones especiales..."></textarea>
+            </label>
+            <div class="flex items-center gap-3 pt-1">
+              <button id="order-submit-btn" class="flex-1 bg-primary-gradient text-white font-bold py-3 rounded-lg" type="submit">Guardar Pedido</button>
+              <button id="order-cancel-edit-btn" class="flex-1 border border-outline-variant/40 text-on-surface font-bold py-3 rounded-lg hidden" type="button">Cancelar edición</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+	    <section id="view-clients" class="view-hidden">
+	      <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+	        <div>
+		          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3">
+		            <span class="material-symbols-outlined text-primary text-3xl sm:text-4xl">group</span>
+		            Clientes
+		          </h1>
+	          <p class="text-on-surface-variant">Gestiona tus clientes con vista en tarjetas.</p>
+	          <div class="mt-4">
+	            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-xs font-bold"><span class="material-symbols-outlined text-sm">groups_2</span>Base de clientes activa</span>
+	          </div>
+	        </div>
+	        <button id="btn-open-client-modal" type="button" class="bg-primary-gradient text-on-primary px-6 py-3 rounded-full font-bold inline-flex items-center gap-2 self-start md:self-auto">
+	          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_add</span>
+	          Nuevo Cliente
+	        </button>
+	      </header>
+
+	      <div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+		        <div class="p-4 sm:p-6 border-b border-outline-variant/10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		          <h2 class="text-lg font-bold">Clientes (Kanban)</h2>
+		          <div class="relative w-full sm:w-auto">
+		            <span class="material-symbols-outlined text-on-surface-variant absolute left-2 top-1/2 -translate-y-1/2 text-base">search</span>
+		            <input id="clients-search" type="text" placeholder="Buscar cliente..." class="w-full sm:w-72 pl-8 pr-3 py-2 text-sm rounded-lg border-outline-variant/40 bg-surface"/>
+		          </div>
+		        </div>
+	        <div class="p-5">
+	          <div id="clients-board" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+	        </div>
+	      </div>
+	    </section>
+
+    <div id="client-modal" class="hidden fixed inset-0 z-50">
+      <div id="client-modal-backdrop" class="absolute inset-0 bg-slate-900/45 backdrop-blur-[1px]"></div>
+	      <div class="relative min-h-full flex items-center justify-center p-4 mobile-sheet-wrap">
+	        <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-indigo-100 mobile-sheet mobile-sheet-panel">
+          <div class="px-5 py-4 border-b border-outline-variant/20 flex items-center justify-between">
+            <h2 id="client-modal-title" class="text-lg font-bold text-primary inline-flex items-center gap-2">
+              <span class="material-symbols-outlined">person_add</span>
+              Nuevo Cliente
+            </h2>
+            <button id="client-modal-close-x" type="button" class="w-8 h-8 rounded-full hover:bg-slate-100 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-on-surface-variant">close</span>
+            </button>
+          </div>
+          <form id="client-form" class="p-5 space-y-4">
+            <input id="client-edit-id" type="hidden"/>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Nombre completo</span>
+              <input id="client-name" type="text" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+            </label>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Teléfono</span>
+              <input id="client-phone" type="text" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+            </label>
+            <label class="block">
+              <span class="text-sm text-on-surface-variant">Dirección</span>
+              <input id="client-address" type="text" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+            </label>
+            <div class="flex items-center gap-3 pt-1">
+              <button id="client-submit-btn" class="flex-1 bg-primary-gradient text-white font-bold py-3 rounded-lg" type="submit">Guardar Cliente</button>
+              <button id="client-cancel-edit-btn" class="flex-1 border border-outline-variant/40 text-on-surface font-bold py-3 rounded-lg hidden" type="button">Cancelar edición</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="client-history-modal" class="hidden fixed inset-0 z-50">
+      <div id="client-history-modal-backdrop" class="absolute inset-0 bg-slate-900/45 backdrop-blur-[1px]"></div>
+	      <div class="relative min-h-full flex items-center justify-center p-4 mobile-sheet-wrap">
+	        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-indigo-100 mobile-sheet mobile-sheet-panel">
+          <div class="px-5 py-4 border-b border-outline-variant/20 flex items-center justify-between">
+            <h2 id="client-history-title" class="text-lg font-bold text-primary inline-flex items-center gap-2">
+              <span class="material-symbols-outlined">history</span>
+              Historial del Cliente
+            </h2>
+            <button id="client-history-close-x" type="button" class="w-8 h-8 rounded-full hover:bg-slate-100 inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-on-surface-variant">close</span>
+            </button>
+          </div>
+          <div id="client-history-body" class="p-5 max-h-[68vh] overflow-auto"></div>
+        </div>
+      </div>
+    </div>
+
+	    <section id="view-services" class="view-hidden">
+	      <header class="mb-8">
+	        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3">
+	          <span class="material-symbols-outlined text-primary text-3xl sm:text-4xl">local_laundry_service</span>
+	          Servicios
+	        </h1>
+	        <p class="text-on-surface-variant">Configura precios y tiempos.</p>
+	        <div class="mt-4 flex items-center gap-2">
+	          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-bold"><span class="material-symbols-outlined text-sm">palette</span>Servicios visuales</span>
+	          <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold"><span class="material-symbols-outlined text-sm">schedule</span>Tiempos claros</span>
+	        </div>
+	      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <form id="service-form" class="lg:col-span-1 bg-surface-container-lowest rounded-xl p-6 space-y-4">
+          <h2 class="text-lg font-bold flex items-center gap-2 text-primary">
+            <span class="material-symbols-outlined">construction</span>
+            Nuevo Servicio
+          </h2>
+          <input id="service-edit-id" type="hidden"/>
+          <label class="block">
+            <span class="text-sm text-on-surface-variant">Nombre del servicio</span>
+            <input id="service-name" type="text" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+          </label>
+          <label class="block">
+            <span class="text-sm text-on-surface-variant">Tipo de cobro</span>
+            <select id="service-pricing-type" class="mt-1 block w-full rounded-lg border-outline-variant/40">
+              <option value="kg">Por kg</option>
+              <option value="unit">Por unidad</option>
+              <option value="fixed">Precio fijo</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-sm text-on-surface-variant">Precio (S/)</span>
+            <input id="service-price" type="number" min="1" step="0.1" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+          </label>
+          <label class="block">
+            <span class="text-sm text-on-surface-variant">Tiempo estimado (horas)</span>
+            <input id="service-hours" type="number" min="1" required class="mt-1 block w-full rounded-lg border-outline-variant/40"/>
+          </label>
+          <button id="service-submit-btn" class="w-full bg-primary-gradient text-white font-bold py-3 rounded-lg" type="submit">Guardar Servicio</button>
+          <button id="service-cancel-edit-btn" class="w-full border border-outline-variant/40 text-on-surface font-bold py-3 rounded-lg hidden" type="button">Cancelar edición</button>
+        </form>
+
+        <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl overflow-hidden">
+          <div class="p-6 border-b border-outline-variant/10">
+            <h2 class="text-lg font-bold">Catálogo de Servicios</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="bg-surface-container-low/50">
+                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant">Servicio</th>
+                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant">Tipo</th>
+                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant">Precio</th>
+                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant">Tiempo</th>
+                  <th class="px-6 py-4 text-xs uppercase tracking-wider text-on-surface-variant">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="services-tbody" class="divide-y divide-outline-variant/10"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="md:hidden fixed bottom-0 left-0 w-full bg-slate-50/90 backdrop-blur-xl h-16 flex items-center justify-around z-40">
+    <button class="nav-btn flex flex-col items-center gap-1 text-sky-700" data-view="dashboard"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span></button>
+    <button class="nav-btn flex flex-col items-center gap-1 text-slate-500" data-view="orders"><span class="material-symbols-outlined">add_circle</span></button>
+    <button class="nav-btn flex flex-col items-center gap-1 text-slate-500" data-view="clients"><span class="material-symbols-outlined">groups</span></button>
+    <button class="nav-btn flex flex-col items-center gap-1 text-slate-500" data-view="services"><span class="material-symbols-outlined">local_laundry_service</span></button>
+  </nav>
+
+  <script>
+    const STORAGE_KEY = "linenlogic_local_v1";
+    const SIDEBAR_STORAGE_KEY = "linenlogic_sidebar_collapsed_v1";
+    const ORDERS_VIEW_STORAGE_KEY = "linenlogic_orders_view_mode_v1";
+    const STATUSES = ["recibido", "lavado", "secado", "listo", "entregado"];
+
+    const defaultData = {
+      clients: [
+        { id: "c1", name: "Alejandro Losa", phone: "987654321", address: "Av. Primavera 120" },
+        { id: "c2", name: "Marta Sánchez", phone: "955331122", address: "Jr. Los Pinos 311" },
+        { id: "c3", name: "Ricardo Palma", phone: "966223344", address: "Calle Surco 45" }
+      ],
+      clientHistory: {
+        c1: [{ at: new Date().toISOString(), text: "Cliente creado en el sistema." }],
+        c2: [{ at: new Date().toISOString(), text: "Cliente creado en el sistema." }],
+        c3: [{ at: new Date().toISOString(), text: "Cliente creado en el sistema." }]
+      },
+      services: [
+        { id: "s1", name: "Lavado estándar", pricingType: "kg", price: 6.5, etaHours: 24 },
+        { id: "s2", name: "Lavado + planchado", pricingType: "kg", price: 9.0, etaHours: 36 },
+        { id: "s3", name: "Solo planchado", pricingType: "fixed", price: 18, etaHours: 12 }
+      ],
+      orders: [
+        { id: "o1", clientId: "c1", serviceId: "s1", quantity: 4.5, measureType: "kg", dueDate: "2026-04-08", notes: "", status: "lavado", createdAt: new Date().toISOString() },
+        { id: "o2", clientId: "c2", serviceId: "s2", quantity: 12, measureType: "kg", dueDate: "2026-04-09", notes: "", status: "listo", createdAt: new Date().toISOString() },
+        { id: "o3", clientId: "c3", serviceId: "s3", quantity: 2, measureType: "unit", dueDate: "2026-04-07", notes: "", status: "secado", createdAt: new Date().toISOString() }
+      ]
+    };
+
+    let state = loadState();
+    let isSidebarCollapsed = false;
+    let ordersViewMode = "table";
+    let draggingOrderId = null;
+
+    function uid(prefix) {
+      return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+          return structuredClone(defaultData);
+        }
+        const parsed = JSON.parse(raw);
+        const normalizedOrders = (parsed.orders || []).map(order => ({
+          ...order,
+          quantity: Number(order.quantity ?? order.weightKg ?? 0),
+          measureType: order.measureType || "kg"
+        }));
+
+        return {
+          clients: parsed.clients || [],
+          clientHistory: parsed.clientHistory || {},
+          services: parsed.services || [],
+          orders: normalizedOrders
+        };
+      } catch (error) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+        return structuredClone(defaultData);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function initials(name) {
+      return name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0].toUpperCase())
+        .join("");
+    }
+
+    function money(amount) {
+      return new Intl.NumberFormat("es-PE", { style: "currency", currency: "PEN" }).format(amount || 0);
+    }
+
+    function getClient(id) {
+      return state.clients.find(c => c.id === id);
+    }
+
+    function getService(id) {
+      return state.services.find(s => s.id === id);
+    }
+
+    function addClientHistory(clientId, text, at = new Date().toISOString()) {
+      if (!state.clientHistory[clientId]) {
+        state.clientHistory[clientId] = [];
+      }
+      state.clientHistory[clientId].unshift({ at, text });
+    }
+
+    function orderQuantity(order) {
+      return Number(order.quantity ?? order.weightKg ?? 0);
+    }
+
+    function orderQuantityText(order) {
+      const quantity = orderQuantity(order);
+      if (order.measureType === "unit") {
+        const rounded = Math.round(quantity);
+        return `${rounded} ${rounded === 1 ? "unidad" : "unidades"}`;
+      }
+      return `${quantity.toFixed(1)} kg`;
+    }
+
+    function orderTotal(order) {
+      const service = getService(order.serviceId);
+      if (!service) return 0;
+      if (service.pricingType === "fixed") return service.price;
+      return orderQuantity(order) * service.price;
+    }
+
+    function startOfDay(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    function addDays(date, days) {
+      const clone = new Date(date);
+      clone.setDate(clone.getDate() + days);
+      return clone;
+    }
+
+    function startOfWeek(date) {
+      const base = startOfDay(date);
+      const diff = (base.getDay() + 6) % 7;
+      return addDays(base, -diff);
+    }
+
+    function startOfMonth(date) {
+      return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function incomeBetween(startInclusive, endExclusive) {
+      return state.orders.reduce((sum, order) => {
+        const createdAt = new Date(order.createdAt || Date.now());
+        if (createdAt >= startInclusive && createdAt < endExclusive) {
+          return sum + orderTotal(order);
+        }
+        return sum;
+      }, 0);
+    }
+
+    function getOrderAlert(order) {
+      if (order.status === "entregado" || !order.dueDate) return null;
+
+      const today = new Date();
+      const startToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const dueDate = new Date(`${order.dueDate}T00:00:00`);
+      const diffDays = Math.floor((dueDate - startToday) / 86400000);
+
+      if (diffDays < 0) {
+        return {
+          level: "overdue",
+          icon: "report_problem",
+          label: `Vencido ${Math.abs(diffDays)}d`,
+          className: "bg-red-100 text-red-700"
+        };
+      }
+      if (diffDays === 0) {
+        return {
+          level: "soon",
+          icon: "schedule",
+          label: "Vence hoy",
+          className: "bg-amber-100 text-amber-800"
+        };
+      }
+      if (diffDays === 1) {
+        return {
+          level: "soon",
+          icon: "pending_actions",
+          label: "Vence mañana",
+          className: "bg-orange-100 text-orange-700"
+        };
+      }
+      return null;
+    }
+
+    function alertBadgeHtml(order) {
+      const alertData = getOrderAlert(order);
+      if (!alertData) {
+        return `<span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700 inline-flex items-center gap-1"><span class="material-symbols-outlined text-sm">task_alt</span>Al día</span>`;
+      }
+      return `<span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 ${alertData.className}"><span class="material-symbols-outlined text-sm">${alertData.icon}</span>${alertData.label}</span>`;
+    }
+
+    function clearKanbanDropIndicators() {
+      document.querySelectorAll(".kanban-column").forEach(col => col.classList.remove("kanban-drop-active"));
+    }
+
+    function statusLabel(status) {
+      const map = {
+        recibido: "Recibido",
+        lavado: "En Lavado",
+        secado: "Secado",
+        listo: "Listo",
+        entregado: "Entregado"
+      };
+      return map[status] || status;
+    }
+
+    function statusClasses(status) {
+      const classes = {
+        recibido: "bg-sky-100 text-sky-800",
+        lavado: "bg-tertiary-container text-on-tertiary-container",
+        secado: "bg-blue-100 text-blue-800",
+        listo: "bg-secondary-fixed-dim text-on-secondary-fixed-variant",
+        entregado: "bg-emerald-100 text-emerald-800"
+      };
+      return classes[status] || "bg-slate-100 text-slate-700";
+    }
+
+    function statusIcon(status) {
+      const icons = {
+        recibido: "inbox",
+        lavado: "water_drop",
+        secado: "air",
+        listo: "check_circle",
+        entregado: "local_shipping"
+      };
+      return icons[status] || "label";
+    }
+
+    function filteredOrders() {
+      const query = document.getElementById("orders-search")?.value.trim().toLowerCase() || "";
+      let rows = [...state.orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      if (!query) return rows;
+
+      return rows.filter(order => {
+        const client = getClient(order.clientId);
+        const service = getService(order.serviceId);
+        return [
+          client?.name || "",
+          service?.name || "",
+          statusLabel(order.status),
+          order.dueDate || "",
+          orderQuantityText(order)
+        ].some(value => value.toLowerCase().includes(query));
+      });
+    }
+
+    function showView(view) {
+      document.querySelectorAll("[id^='view-']").forEach(section => section.classList.add("view-hidden"));
+      document.getElementById(`view-${view}`).classList.remove("view-hidden");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        if (btn.dataset.view === view) {
+          btn.classList.add("text-sky-700");
+          btn.classList.remove("text-slate-500");
+          btn.classList.add("bg-blue-100/60");
+        } else {
+          btn.classList.add("text-slate-500");
+          btn.classList.remove("text-sky-700");
+          btn.classList.remove("bg-blue-100/60");
+        }
+      });
+    }
+
+    function renderDashboard() {
+      const today = new Date().toISOString().slice(0, 10);
+      const ordersToday = state.orders.filter(order => (order.createdAt || "").slice(0, 10) === today).length;
+      const inProgress = state.orders.filter(order => ["recibido", "lavado", "secado"].includes(order.status)).length;
+      const ready = state.orders.filter(order => order.status === "listo").length;
+      const overdueCount = state.orders.filter(order => getOrderAlert(order)?.level === "overdue").length;
+      const dueSoonCount = state.orders.filter(order => getOrderAlert(order)?.level === "soon").length;
+      const now = new Date();
+      const todayStart = startOfDay(now);
+      const tomorrowStart = addDays(todayStart, 1);
+      const weekStart = startOfWeek(now);
+      const monthStart = startOfMonth(now);
+      const incomeToday = incomeBetween(todayStart, tomorrowStart);
+      const incomeWeek = incomeBetween(weekStart, tomorrowStart);
+      const incomeMonth = incomeBetween(monthStart, tomorrowStart);
+
+      document.getElementById("metric-orders-today").textContent = String(ordersToday);
+      document.getElementById("metric-in-progress").textContent = String(inProgress);
+      document.getElementById("metric-ready").textContent = String(ready);
+      document.getElementById("metric-income-today").textContent = money(incomeToday);
+      document.getElementById("metric-income-week").textContent = money(incomeWeek);
+      document.getElementById("metric-income-month").textContent = money(incomeMonth);
+      const dashboardAlertBox = document.getElementById("dashboard-alert-box");
+      const dashboardAlertText = document.getElementById("dashboard-alert-text");
+      if (overdueCount > 0 || dueSoonCount > 0) {
+        dashboardAlertBox.classList.remove("hidden");
+        dashboardAlertText.textContent = `${overdueCount} vencido(s) y ${dueSoonCount} por vencer (hoy/mañana).`;
+      } else {
+        dashboardAlertBox.classList.add("hidden");
+      }
+
+      const progress = state.orders.length > 0 ? Math.round((inProgress / state.orders.length) * 100) : 0;
+      document.getElementById("progress-bar").style.width = `${progress}%`;
+
+      const tbody = document.getElementById("latest-orders-tbody");
+      const latest = [...state.orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+      tbody.innerHTML = latest.map(order => {
+        const client = getClient(order.clientId);
+        const service = getService(order.serviceId);
+        const alertLevel = getOrderAlert(order)?.level;
+        const rowHighlightClass = alertLevel === "overdue" ? "bg-red-50/60" : alertLevel === "soon" ? "bg-amber-50/60" : "";
+        return `
+          <tr class="hover:bg-surface-container-high transition-colors ${rowHighlightClass}">
+            <td class="px-8 py-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center text-primary font-bold">${initials(client?.name || "SN")}</div>
+                <span class="font-medium text-on-surface">${client?.name || "Cliente eliminado"}</span>
+              </div>
+            </td>
+            <td class="px-8 py-6">
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 ${statusClasses(order.status)}">
+                <span class="material-symbols-outlined text-sm">${statusIcon(order.status)}</span>
+                ${statusLabel(order.status)}
+              </span>
+            </td>
+            <td class="px-8 py-6 text-on-surface-variant font-medium">${orderQuantityText(order)}</td>
+            <td class="px-8 py-6 text-on-surface-variant font-medium">${service?.name || "Servicio eliminado"}</td>
+            <td class="px-8 py-6">${alertBadgeHtml(order)}</td>
+            <td class="px-8 py-6 text-on-surface-variant font-medium">${money(orderTotal(order))}</td>
+          </tr>
+        `;
+      }).join("");
+
+      if (!latest.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-8 py-10 text-center text-on-surface-variant">Aún no hay pedidos.</td></tr>`;
+      }
+    }
+
+    function renderOrderFormOptions() {
+      const clientSelect = document.getElementById("order-client");
+      const serviceSelect = document.getElementById("order-service");
+
+      clientSelect.innerHTML = state.clients.map(client => `<option value="${client.id}">${client.name}</option>`).join("");
+      serviceSelect.innerHTML = state.services.map(service => {
+        const pricingTypeText = service.pricingType === "kg" ? "por kg" : service.pricingType === "unit" ? "por unidad" : "fijo";
+        return `<option value="${service.id}">${service.name} (${pricingTypeText})</option>`;
+      }).join("");
+
+      if (!state.clients.length) {
+        clientSelect.innerHTML = `<option value="">No hay clientes</option>`;
+      }
+      if (!state.services.length) {
+        serviceSelect.innerHTML = `<option value="">No hay servicios</option>`;
+      }
+
+      const selectedService = getService(serviceSelect.value);
+      if (selectedService?.pricingType === "kg" || selectedService?.pricingType === "unit") {
+        document.getElementById("order-measure-type").value = selectedService.pricingType;
+      }
+      updateOrderQuantityUi();
+    }
+
+    function renderOrdersTable() {
+      const tbody = document.getElementById("orders-tbody");
+      const query = document.getElementById("orders-search")?.value.trim().toLowerCase() || "";
+      const rows = filteredOrders();
+
+      tbody.innerHTML = rows.map(order => {
+        const client = getClient(order.clientId);
+        const service = getService(order.serviceId);
+        const alertLevel = getOrderAlert(order)?.level;
+        const rowHighlightClass = alertLevel === "overdue" ? "bg-red-50/60" : alertLevel === "soon" ? "bg-amber-50/60" : "";
+        return `
+          <tr class="${rowHighlightClass}">
+            <td class="px-6 py-4">${client?.name || "Cliente eliminado"}</td>
+            <td class="px-6 py-4">${service?.name || "Servicio eliminado"}</td>
+            <td class="px-6 py-4">${orderQuantityText(order)}</td>
+            <td class="px-6 py-4">
+              <select class="status-select rounded-lg border-outline-variant/40 text-sm" data-order-id="${order.id}">
+                ${STATUSES.map(status => `<option value="${status}" ${status === order.status ? "selected" : ""}>${statusLabel(status)}</option>`).join("")}
+              </select>
+            </td>
+            <td class="px-6 py-4">${money(orderTotal(order))}</td>
+            <td class="px-6 py-4">
+              <button class="edit-order text-sm text-primary hover:underline mr-3" data-order-id="${order.id}">Editar</button>
+              <button class="delete-order text-sm text-error hover:underline" data-order-id="${order.id}">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      if (!rows.length) {
+        const message = query ? "Sin resultados para la búsqueda actual." : "No hay pedidos registrados.";
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-on-surface-variant">${message}</td></tr>`;
+      }
+    }
+
+    function renderOrdersKanban() {
+      const board = document.getElementById("orders-kanban-board");
+      const rows = filteredOrders();
+      const colMeta = {
+        recibido: { title: "Recibido", icon: "inbox" },
+        lavado: { title: "Lavado", icon: "water_drop" },
+        secado: { title: "Secado", icon: "air" },
+        listo: { title: "Listo", icon: "check_circle" },
+        entregado: { title: "Entregado", icon: "local_shipping" }
+      };
+
+      board.innerHTML = STATUSES.map(status => {
+        const items = rows.filter(order => order.status === status);
+        const cards = items.map(order => {
+          const client = getClient(order.clientId);
+          const service = getService(order.serviceId);
+          const alertLevel = getOrderAlert(order)?.level;
+          const cardRing = alertLevel === "overdue" ? "ring-1 ring-red-200" : alertLevel === "soon" ? "ring-1 ring-amber-200" : "ring-1 ring-slate-100";
+          return `
+            <article class="bg-white rounded-xl p-3 ${cardRing} shadow-sm" data-kanban-card="1" data-order-id="${order.id}" draggable="true">
+              <div class="flex items-start justify-between gap-2">
+                <p class="font-bold text-sm text-on-surface">${client?.name || "Cliente eliminado"}</p>
+                ${alertBadgeHtml(order)}
+              </div>
+              <p class="text-xs text-on-surface-variant mt-1">${service?.name || "Servicio eliminado"}</p>
+              <div class="mt-2 flex items-center justify-between text-xs">
+                <span class="inline-flex items-center gap-1 text-on-surface-variant"><span class="material-symbols-outlined text-sm">fitness_center</span>${orderQuantityText(order)}</span>
+                <span class="font-bold text-primary">${money(orderTotal(order))}</span>
+              </div>
+              <div class="mt-2 flex items-center gap-3">
+                <button class="edit-order text-xs text-primary hover:underline" data-order-id="${order.id}">Editar</button>
+                <button class="delete-order text-xs text-error hover:underline" data-order-id="${order.id}">Eliminar</button>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        return `
+          <section class="kanban-column bg-surface-container-low rounded-xl p-3 border border-transparent" data-kanban-status="${status}">
+            <header class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-on-surface inline-flex items-center gap-1">
+                <span class="material-symbols-outlined text-base text-primary">${colMeta[status].icon}</span>
+                ${colMeta[status].title}
+              </h3>
+              <span class="text-xs px-2 py-1 rounded-full bg-white text-on-surface-variant font-bold">${items.length}</span>
+            </header>
+            <div class="space-y-3">
+              ${cards || `<div class="text-xs text-on-surface-variant px-2 py-3 bg-white rounded-lg ring-1 ring-slate-100">Sin pedidos</div>`}
+            </div>
+          </section>
+        `;
+      }).join("");
+    }
+
+    function applyOrdersViewMode() {
+      const tableWrap = document.getElementById("orders-table-wrap");
+      const kanbanWrap = document.getElementById("orders-kanban-wrap");
+      const tableBtn = document.getElementById("orders-view-table");
+      const kanbanBtn = document.getElementById("orders-view-kanban");
+
+      const isKanban = ordersViewMode === "kanban";
+      tableWrap.classList.toggle("hidden", isKanban);
+      kanbanWrap.classList.toggle("hidden", !isKanban);
+
+      tableBtn.classList.toggle("bg-white", !isKanban);
+      tableBtn.classList.toggle("text-primary", !isKanban);
+      tableBtn.classList.toggle("text-on-surface-variant", isKanban);
+
+      kanbanBtn.classList.toggle("bg-white", isKanban);
+      kanbanBtn.classList.toggle("text-primary", isKanban);
+      kanbanBtn.classList.toggle("text-on-surface-variant", !isKanban);
+    }
+
+    function renderClients() {
+      const board = document.getElementById("clients-board");
+      const query = document.getElementById("clients-search")?.value.trim().toLowerCase() || "";
+      const clients = state.clients.filter(client => {
+        if (!query) return true;
+        return [client.name, client.phone, client.address].some(value => String(value || "").toLowerCase().includes(query));
+      });
+
+      board.innerHTML = clients.map(client => {
+        const clientOrders = state.orders.filter(order => order.clientId === client.id);
+        const activeOrders = clientOrders.filter(order => order.status !== "entregado").length;
+        const lifetime = clientOrders.reduce((sum, order) => sum + orderTotal(order), 0);
+        return `
+          <article class="bg-white rounded-xl p-4 ring-1 ring-slate-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center">${initials(client.name)}</div>
+                <div>
+                  <p class="font-bold text-on-surface">${client.name}</p>
+                  <p class="text-xs text-on-surface-variant">${client.phone}</p>
+                </div>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-bold inline-flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">laundry</span>${activeOrders} activo(s)
+              </span>
+            </div>
+            <p class="mt-3 text-sm text-on-surface-variant inline-flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">location_on</span>${client.address}
+            </p>
+            <div class="mt-3 text-xs text-on-surface-variant">
+              <span class="font-bold text-emerald-700">${money(lifetime)}</span> facturado acumulado
+            </div>
+            <div class="mt-4 flex items-center gap-3">
+              <button class="history-client text-xs text-indigo-700 hover:underline" data-client-id="${client.id}">Historial</button>
+              <button class="edit-client text-xs text-primary hover:underline" data-client-id="${client.id}">Editar</button>
+              <button class="delete-client text-xs text-error hover:underline" data-client-id="${client.id}">Eliminar</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      if (!clients.length) {
+        const message = query ? "Sin resultados para la búsqueda actual." : "No hay clientes registrados.";
+        board.innerHTML = `<div class="col-span-full px-6 py-10 text-center text-on-surface-variant bg-white rounded-xl ring-1 ring-slate-100">${message}</div>`;
+      }
+    }
+
+    function renderServices() {
+      const tbody = document.getElementById("services-tbody");
+      tbody.innerHTML = state.services.map(service => `
+        <tr>
+          <td class="px-6 py-4 font-medium">${service.name}</td>
+          <td class="px-6 py-4">${service.pricingType === "kg" ? "Por kg" : service.pricingType === "unit" ? "Por unidad" : "Precio fijo"}</td>
+          <td class="px-6 py-4">${money(service.price)}</td>
+          <td class="px-6 py-4">${service.etaHours}h</td>
+          <td class="px-6 py-4 flex items-center gap-3">
+            <button class="edit-service text-sm text-primary hover:underline" data-service-id="${service.id}">Editar</button>
+            <button class="delete-service text-sm text-error hover:underline" data-service-id="${service.id}">Eliminar</button>
+          </td>
+        </tr>
+      `).join("");
+
+      if (!state.services.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-on-surface-variant">No hay servicios registrados.</td></tr>`;
+      }
+    }
+
+    function rerenderAll() {
+      renderDashboard();
+      renderClients();
+      renderServices();
+      renderOrderFormOptions();
+      renderOrdersTable();
+      renderOrdersKanban();
+      applyOrdersViewMode();
+    }
+
+    function applySidebarState() {
+      const toggleIcon = document.getElementById("sidebar-toggle-icon");
+      const toggleButton = document.getElementById("btn-toggle-sidebar");
+      document.body.classList.toggle("sidebar-collapsed", isSidebarCollapsed);
+
+      if (toggleIcon) {
+        toggleIcon.textContent = isSidebarCollapsed ? "right_panel_open" : "left_panel_open";
+      }
+      if (toggleButton) {
+        toggleButton.title = isSidebarCollapsed ? "Expandir menú lateral" : "Contraer menú lateral";
+      }
+    }
+
+    function loadSidebarState() {
+      isSidebarCollapsed = localStorage.getItem(SIDEBAR_STORAGE_KEY) === "1";
+      applySidebarState();
+    }
+
+    function resetClientForm() {
+      document.getElementById("client-form").reset();
+      document.getElementById("client-edit-id").value = "";
+      document.getElementById("client-submit-btn").textContent = "Guardar Cliente";
+      document.getElementById("client-cancel-edit-btn").classList.add("hidden");
+      document.getElementById("client-modal-title").innerHTML = `<span class="material-symbols-outlined">person_add</span>Nuevo Cliente`;
+    }
+
+    function openClientModal() {
+      document.getElementById("client-modal").classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeClientModal() {
+      document.getElementById("client-modal").classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+      resetClientForm();
+    }
+
+    function openClientHistoryModal(clientId) {
+      const client = getClient(clientId);
+      if (!client) return;
+      const body = document.getElementById("client-history-body");
+      document.getElementById("client-history-title").innerHTML = `<span class="material-symbols-outlined">history</span>Historial de ${client.name}`;
+
+      const historyLogs = state.clientHistory[clientId] || [];
+      const orderLogs = state.orders
+        .filter(order => order.clientId === clientId)
+        .map(order => ({
+          at: order.createdAt,
+          text: `Pedido registrado (${orderQuantityText(order)} • ${statusLabel(order.status)} • ${money(orderTotal(order))})`
+        }));
+      const merged = [...historyLogs, ...orderLogs]
+        .filter(item => item?.at)
+        .sort((a, b) => new Date(b.at) - new Date(a.at));
+
+      body.innerHTML = merged.length
+        ? `<div class="space-y-3">${merged.map(item => `
+            <div class="p-3 rounded-lg bg-surface ring-1 ring-slate-100">
+              <p class="text-sm text-on-surface">${item.text}</p>
+              <p class="text-xs text-on-surface-variant mt-1">${new Date(item.at).toLocaleString("es-PE")}</p>
+            </div>
+          `).join("")}</div>`
+        : `<p class="text-sm text-on-surface-variant">Este cliente todavía no tiene historial.</p>`;
+
+      document.getElementById("client-history-modal").classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeClientHistoryModal() {
+      document.getElementById("client-history-modal").classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    function resetServiceForm() {
+      document.getElementById("service-form").reset();
+      document.getElementById("service-edit-id").value = "";
+      document.getElementById("service-submit-btn").textContent = "Guardar Servicio";
+      document.getElementById("service-cancel-edit-btn").classList.add("hidden");
+    }
+
+    function resetOrderForm() {
+      document.getElementById("order-form").reset();
+      document.getElementById("order-edit-id").value = "";
+      document.getElementById("order-submit-btn").textContent = "Guardar Pedido";
+      document.getElementById("order-cancel-edit-btn").classList.add("hidden");
+      document.getElementById("order-modal-title").innerHTML = `<span class="material-symbols-outlined">add_shopping_cart</span>Nuevo Pedido`;
+      updateOrderQuantityUi();
+    }
+
+    function openOrderModal() {
+      const modal = document.getElementById("order-modal");
+      modal.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeOrderModal() {
+      const modal = document.getElementById("order-modal");
+      modal.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+      resetOrderForm();
+    }
+
+    function updateOrderQuantityUi() {
+      const measureType = document.getElementById("order-measure-type").value;
+      const quantityLabel = document.getElementById("order-quantity-label");
+      const quantityInput = document.getElementById("order-quantity");
+
+      if (measureType === "unit") {
+        quantityLabel.textContent = "Cantidad (unidades)";
+        quantityInput.min = "1";
+        quantityInput.step = "1";
+      } else {
+        quantityLabel.textContent = "Cantidad (kg)";
+        quantityInput.min = "0.1";
+        quantityInput.step = "0.1";
+      }
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => showView(btn.dataset.view));
+    });
+
+    document.getElementById("btn-go-orders").addEventListener("click", () => showView("orders"));
+    document.getElementById("btn-ver-todos").addEventListener("click", () => showView("orders"));
+    document.getElementById("btn-go-alert-orders").addEventListener("click", () => showView("orders"));
+    document.getElementById("btn-open-order-modal").addEventListener("click", () => {
+      resetOrderForm();
+      openOrderModal();
+    });
+    document.getElementById("order-modal-close-x").addEventListener("click", () => {
+      closeOrderModal();
+    });
+    document.getElementById("order-modal-backdrop").addEventListener("click", () => {
+      closeOrderModal();
+    });
+    document.getElementById("btn-open-client-modal").addEventListener("click", () => {
+      resetClientForm();
+      openClientModal();
+    });
+    document.getElementById("client-modal-close-x").addEventListener("click", () => {
+      closeClientModal();
+    });
+    document.getElementById("client-modal-backdrop").addEventListener("click", () => {
+      closeClientModal();
+    });
+    document.getElementById("client-history-close-x").addEventListener("click", () => {
+      closeClientHistoryModal();
+    });
+    document.getElementById("client-history-modal-backdrop").addEventListener("click", () => {
+      closeClientHistoryModal();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !document.getElementById("order-modal").classList.contains("hidden")) {
+        closeOrderModal();
+      }
+      if (event.key === "Escape" && !document.getElementById("client-modal").classList.contains("hidden")) {
+        closeClientModal();
+      }
+      if (event.key === "Escape" && !document.getElementById("client-history-modal").classList.contains("hidden")) {
+        closeClientHistoryModal();
+      }
+    });
+    document.getElementById("btn-toggle-sidebar").addEventListener("click", () => {
+      isSidebarCollapsed = !isSidebarCollapsed;
+      localStorage.setItem(SIDEBAR_STORAGE_KEY, isSidebarCollapsed ? "1" : "0");
+      applySidebarState();
+    });
+    document.getElementById("orders-search").addEventListener("input", () => {
+      renderOrdersTable();
+      renderOrdersKanban();
+    });
+    document.getElementById("clients-search").addEventListener("input", () => {
+      renderClients();
+    });
+    document.getElementById("orders-view-table").addEventListener("click", () => {
+      ordersViewMode = "table";
+      localStorage.setItem(ORDERS_VIEW_STORAGE_KEY, ordersViewMode);
+      applyOrdersViewMode();
+    });
+    document.getElementById("orders-view-kanban").addEventListener("click", () => {
+      ordersViewMode = "kanban";
+      localStorage.setItem(ORDERS_VIEW_STORAGE_KEY, ordersViewMode);
+      applyOrdersViewMode();
+    });
+    document.getElementById("order-measure-type").addEventListener("change", updateOrderQuantityUi);
+    document.getElementById("order-service").addEventListener("change", () => {
+      const selectedServiceId = document.getElementById("order-service").value;
+      const selectedService = getService(selectedServiceId);
+      if (!selectedService) return;
+      if (selectedService.pricingType === "kg") {
+        document.getElementById("order-measure-type").value = "kg";
+      } else if (selectedService.pricingType === "unit") {
+        document.getElementById("order-measure-type").value = "unit";
+      }
+      updateOrderQuantityUi();
+    });
+
+    document.getElementById("client-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const editingId = document.getElementById("client-edit-id").value;
+      const name = document.getElementById("client-name").value.trim();
+      const phone = document.getElementById("client-phone").value.trim();
+      const address = document.getElementById("client-address").value.trim();
+
+      if (!name || !phone || !address) return;
+
+      if (editingId) {
+        const client = state.clients.find(item => item.id === editingId);
+        if (client) {
+          const oldName = client.name;
+          client.name = name;
+          client.phone = phone;
+          client.address = address;
+          addClientHistory(client.id, `Datos actualizados (${oldName} → ${name}).`);
+        }
+      } else {
+        const newClientId = uid("c");
+        state.clients.push({ id: newClientId, name, phone, address });
+        addClientHistory(newClientId, "Cliente creado en el sistema.");
+      }
+      saveState();
+      resetClientForm();
+      closeClientModal();
+      rerenderAll();
+    });
+
+    document.getElementById("service-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const editingId = document.getElementById("service-edit-id").value;
+      const name = document.getElementById("service-name").value.trim();
+      const pricingType = document.getElementById("service-pricing-type").value;
+      const price = Number(document.getElementById("service-price").value);
+      const etaHours = Number(document.getElementById("service-hours").value);
+
+      if (!name || !price || !etaHours) return;
+
+      if (editingId) {
+        const service = state.services.find(item => item.id === editingId);
+        if (service) {
+          service.name = name;
+          service.pricingType = pricingType;
+          service.price = price;
+          service.etaHours = etaHours;
+        }
+      } else {
+        state.services.push({ id: uid("s"), name, pricingType, price, etaHours });
+      }
+      saveState();
+      resetServiceForm();
+      rerenderAll();
+    });
+
+    document.getElementById("order-form").addEventListener("submit", event => {
+      event.preventDefault();
+      if (!state.clients.length || !state.services.length) {
+        alert("Primero debes tener al menos un cliente y un servicio.");
+        return;
+      }
+
+      const editingId = document.getElementById("order-edit-id").value;
+      const clientId = document.getElementById("order-client").value;
+      const serviceId = document.getElementById("order-service").value;
+      const measureType = document.getElementById("order-measure-type").value;
+      const quantity = Number(document.getElementById("order-quantity").value);
+      const dueDate = document.getElementById("order-due-date").value;
+      const notes = document.getElementById("order-notes").value.trim();
+
+      if (!clientId || !serviceId || !quantity || !dueDate) return;
+
+      if (editingId) {
+        const order = state.orders.find(item => item.id === editingId);
+        if (order) {
+          const previousClientId = order.clientId;
+          order.clientId = clientId;
+          order.serviceId = serviceId;
+          order.measureType = measureType;
+          order.quantity = quantity;
+          order.dueDate = dueDate;
+          order.notes = notes;
+          addClientHistory(clientId, `Pedido actualizado (${orderQuantityText(order)} • ${statusLabel(order.status)}).`);
+          if (previousClientId !== clientId) {
+            addClientHistory(previousClientId, "Pedido reasignado a otro cliente.");
+          }
+        }
+      } else {
+        const newOrder = {
+          id: uid("o"),
+          clientId,
+          serviceId,
+          quantity,
+          measureType,
+          dueDate,
+          notes,
+          status: "recibido",
+          createdAt: new Date().toISOString()
+        };
+        state.orders.push(newOrder);
+        addClientHistory(clientId, `Pedido creado (${orderQuantityText(newOrder)}).`);
+      }
+
+      saveState();
+      resetOrderForm();
+      rerenderAll();
+      showView("orders");
+      closeOrderModal();
+    });
+
+    document.getElementById("orders-tbody").addEventListener("change", event => {
+      if (!event.target.classList.contains("status-select")) return;
+      const orderId = event.target.dataset.orderId;
+      const order = state.orders.find(item => item.id === orderId);
+      if (!order) return;
+      order.status = event.target.value;
+      addClientHistory(order.clientId, `Estado de pedido actualizado a ${statusLabel(order.status)}.`);
+      saveState();
+      rerenderAll();
+    });
+    document.getElementById("orders-kanban-board").addEventListener("dragstart", event => {
+      const card = event.target.closest("[data-kanban-card]");
+      if (!card) return;
+      draggingOrderId = card.dataset.orderId;
+      card.classList.add("opacity-60");
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", draggingOrderId);
+      }
+    });
+    document.getElementById("orders-kanban-board").addEventListener("dragend", event => {
+      const card = event.target.closest("[data-kanban-card]");
+      if (card) {
+        card.classList.remove("opacity-60");
+      }
+      draggingOrderId = null;
+      clearKanbanDropIndicators();
+    });
+    document.getElementById("orders-kanban-board").addEventListener("dragover", event => {
+      const column = event.target.closest("[data-kanban-status]");
+      if (!column) return;
+      event.preventDefault();
+      clearKanbanDropIndicators();
+      column.classList.add("kanban-drop-active");
+    });
+    document.getElementById("orders-kanban-board").addEventListener("dragleave", event => {
+      const column = event.target.closest("[data-kanban-status]");
+      if (!column) return;
+      const related = event.relatedTarget;
+      if (!related || !column.contains(related)) {
+        column.classList.remove("kanban-drop-active");
+      }
+    });
+    document.getElementById("orders-kanban-board").addEventListener("drop", event => {
+      const column = event.target.closest("[data-kanban-status]");
+      if (!column) return;
+      event.preventDefault();
+
+      const orderId = draggingOrderId || event.dataTransfer?.getData("text/plain");
+      const targetStatus = column.dataset.kanbanStatus;
+      clearKanbanDropIndicators();
+      if (!orderId || !targetStatus) return;
+
+      const order = state.orders.find(item => item.id === orderId);
+      if (!order || order.status === targetStatus) return;
+      order.status = targetStatus;
+      addClientHistory(order.clientId, `Estado de pedido movido a ${statusLabel(targetStatus)} (Kanban).`);
+      saveState();
+      rerenderAll();
+    });
+
+    document.getElementById("orders-tbody").addEventListener("click", event => {
+      if (event.target.classList.contains("edit-order")) {
+        const orderId = event.target.dataset.orderId;
+        const order = state.orders.find(item => item.id === orderId);
+        if (!order) return;
+        document.getElementById("order-edit-id").value = order.id;
+        document.getElementById("order-client").value = order.clientId;
+        document.getElementById("order-service").value = order.serviceId;
+        document.getElementById("order-measure-type").value = order.measureType || "kg";
+        document.getElementById("order-quantity").value = orderQuantity(order);
+        document.getElementById("order-due-date").value = order.dueDate;
+        document.getElementById("order-notes").value = order.notes || "";
+        document.getElementById("order-submit-btn").textContent = "Actualizar Pedido";
+        document.getElementById("order-modal-title").innerHTML = `<span class="material-symbols-outlined">edit</span>Editar Pedido`;
+        document.getElementById("order-cancel-edit-btn").classList.remove("hidden");
+        updateOrderQuantityUi();
+        openOrderModal();
+        showView("orders");
+        return;
+      }
+
+      if (event.target.classList.contains("delete-order")) {
+        const orderId = event.target.dataset.orderId;
+        state.orders = state.orders.filter(order => order.id !== orderId);
+        saveState();
+        rerenderAll();
+      }
+    });
+    document.getElementById("orders-kanban-board").addEventListener("click", event => {
+      if (event.target.classList.contains("edit-order")) {
+        const orderId = event.target.dataset.orderId;
+        const order = state.orders.find(item => item.id === orderId);
+        if (!order) return;
+        document.getElementById("order-edit-id").value = order.id;
+        document.getElementById("order-client").value = order.clientId;
+        document.getElementById("order-service").value = order.serviceId;
+        document.getElementById("order-measure-type").value = order.measureType || "kg";
+        document.getElementById("order-quantity").value = orderQuantity(order);
+        document.getElementById("order-due-date").value = order.dueDate;
+        document.getElementById("order-notes").value = order.notes || "";
+        document.getElementById("order-submit-btn").textContent = "Actualizar Pedido";
+        document.getElementById("order-modal-title").innerHTML = `<span class="material-symbols-outlined">edit</span>Editar Pedido`;
+        document.getElementById("order-cancel-edit-btn").classList.remove("hidden");
+        updateOrderQuantityUi();
+        openOrderModal();
+        showView("orders");
+        return;
+      }
+      if (event.target.classList.contains("delete-order")) {
+        const orderId = event.target.dataset.orderId;
+        state.orders = state.orders.filter(order => order.id !== orderId);
+        saveState();
+        rerenderAll();
+      }
+    });
+
+    document.getElementById("clients-board").addEventListener("click", event => {
+      if (event.target.classList.contains("history-client")) {
+        const clientId = event.target.dataset.clientId;
+        openClientHistoryModal(clientId);
+        return;
+      }
+
+      if (event.target.classList.contains("edit-client")) {
+        const clientId = event.target.dataset.clientId;
+        const client = state.clients.find(item => item.id === clientId);
+        if (!client) return;
+        document.getElementById("client-edit-id").value = client.id;
+        document.getElementById("client-name").value = client.name;
+        document.getElementById("client-phone").value = client.phone;
+        document.getElementById("client-address").value = client.address;
+        document.getElementById("client-submit-btn").textContent = "Actualizar Cliente";
+        document.getElementById("client-modal-title").innerHTML = `<span class="material-symbols-outlined">edit</span>Editar Cliente`;
+        document.getElementById("client-cancel-edit-btn").classList.remove("hidden");
+        openClientModal();
+        showView("clients");
+        return;
+      }
+
+      if (!event.target.classList.contains("delete-client")) return;
+      const clientId = event.target.dataset.clientId;
+      const hasOrders = state.orders.some(order => order.clientId === clientId);
+      if (hasOrders) {
+        alert("No se puede eliminar: este cliente tiene pedidos asociados.");
+        return;
+      }
+      state.clients = state.clients.filter(client => client.id !== clientId);
+      delete state.clientHistory[clientId];
+      saveState();
+      rerenderAll();
+    });
+
+    document.getElementById("services-tbody").addEventListener("click", event => {
+      if (event.target.classList.contains("edit-service")) {
+        const serviceId = event.target.dataset.serviceId;
+        const service = state.services.find(item => item.id === serviceId);
+        if (!service) return;
+        document.getElementById("service-edit-id").value = service.id;
+        document.getElementById("service-name").value = service.name;
+        document.getElementById("service-pricing-type").value = service.pricingType;
+        document.getElementById("service-price").value = service.price;
+        document.getElementById("service-hours").value = service.etaHours;
+        document.getElementById("service-submit-btn").textContent = "Actualizar Servicio";
+        document.getElementById("service-cancel-edit-btn").classList.remove("hidden");
+        showView("services");
+        return;
+      }
+
+      if (!event.target.classList.contains("delete-service")) return;
+      const serviceId = event.target.dataset.serviceId;
+      const hasOrders = state.orders.some(order => order.serviceId === serviceId);
+      if (hasOrders) {
+        alert("No se puede eliminar: este servicio tiene pedidos asociados.");
+        return;
+      }
+      state.services = state.services.filter(service => service.id !== serviceId);
+      saveState();
+      rerenderAll();
+    });
+
+    document.getElementById("btn-reset-demo").addEventListener("click", () => {
+      if (!confirm("¿Seguro que deseas reiniciar los datos demo?")) return;
+      state = structuredClone(defaultData);
+      saveState();
+      resetClientForm();
+      resetServiceForm();
+      resetOrderForm();
+      rerenderAll();
+      closeOrderModal();
+      closeClientModal();
+      closeClientHistoryModal();
+      showView("dashboard");
+    });
+
+    document.getElementById("client-cancel-edit-btn").addEventListener("click", () => {
+      closeClientModal();
+    });
+
+    document.getElementById("service-cancel-edit-btn").addEventListener("click", () => {
+      resetServiceForm();
+    });
+    document.getElementById("order-cancel-edit-btn").addEventListener("click", () => {
+      resetOrderForm();
+    });
+
+    const storedOrdersViewMode = localStorage.getItem(ORDERS_VIEW_STORAGE_KEY);
+    if (storedOrdersViewMode === "table" || storedOrdersViewMode === "kanban") {
+      ordersViewMode = storedOrdersViewMode;
+    } else {
+      ordersViewMode = window.matchMedia("(max-width: 767px)").matches ? "kanban" : "table";
+    }
+    rerenderAll();
+    resetClientForm();
+    resetServiceForm();
+    resetOrderForm();
+    loadSidebarState();
+    showView("dashboard");
+  </script>
+</body>
+</html>
